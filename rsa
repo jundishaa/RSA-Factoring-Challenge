@@ -1,18 +1,40 @@
 #!/usr/bin/python3
 from sys import argv
+import math
+
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+def factorize(num):
+    factors = []
+    while num % 2 == 0:
+        factors.append(2)
+        num //= 2
+    for i in range(3, int(math.sqrt(num)) + 1, 2):
+        while num % i == 0:
+            factors.append(i)
+            num //= i
+    if num > 2:
+        factors.append(num)
+    return factors
 
 with open(argv[1]) as f:
     for line in f:
         num = int(line)
         print("{:d}=".format(num), end="")
-        if num % 2 == 0:
-            print("{}*2".format(num//2))
-            continue
-        for i in range(3, num, 2):
-            if num % i == 0:
-                factor = num//i
-                for j in range(3, factor, 2):
-                    if factor % j == 0 or i % j == 0:
-                        break
-                print("{}*{}".format(factor, i))
-                break
+        if is_prime(num):
+            print(num)
+        else:
+            factors = factorize(num)
+            print('*'.join(map(str, factors)))
